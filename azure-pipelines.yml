@@ -1,0 +1,29 @@
+trigger:
+- main   # Or master, depending on your branch name
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Install Node.js'
+
+# Install Azure CLI
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'AzureStorageConnection'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo "Uploading website files to Azure Storage..."
+      az storage blob upload-batch \
+        --account-name zahiddevopsweb \
+        --auth-mode key \
+        -d '$web' \
+        -s .
+
+
+
+  
